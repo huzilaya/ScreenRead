@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.PixelFormat
+import android.graphics.Rect
 import android.os.Build
 import android.provider.Settings
 import android.view.Gravity
@@ -17,26 +18,38 @@ import android.widget.Toast
 
 class FloatingTextWindow(
     private val ctx: Context,
-    private val onClose: (() -> Unit)? = null
+    private val listener: Listener
 ) {
+
+    interface Listener {
+        fun onSwipeUp()
+        fun onSwipeDown()
+        fun onAutoToggle(want: Boolean): Boolean
+        fun onClose()
+    }
 
     private val wm = ctx.getSystemService(WindowManager::class.java)
 
     private var root: View? = null
     private var txt: TextView? = null
-    private var counter: TextView? = null
+    private var status: TextView? = null
     private var scroll: ScrollView? = null
+    private var autoBtn: TextView? = null
 
+    private var autoOn = false
     private var dragDx = 0f
     private var dragDy = 0f
+
+    fun isShowing() = root != null
 
     fun show() {
         if (root != null) return
 
         val v = LayoutInflater.from(ctx).inflate(R.layout.view_float_panel, null, false)
         txt = v.findViewById(R.id.txtFloat)
-        counter = v.findViewById(R.id.txtCount)
+        status = v.findViewById(R.id.txtStatus)
         scroll = v.findViewById(R.id.scrollFloat)
+        autoBtn = v.findViewById(R.id.btnAuto)
 
         val screenW = if (Build.VERSION.SDK_INT >= 30) {
             wm.currentWindowMetrics.bounds.width()
@@ -45,18 +58,18 @@ class FloatingTextWindow(
         }
 
         val lp = WindowManager.LayoutParams(
-            screenW - dp(24),
+            screenW - dp(20),
             WindowManager.LayoutParams.WRAP_CONTENT,
             resolveType(),
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
             PixelFormat.TRANSLUCENT
         ).apply {
             gravity = Gravity.TOP or Gravity.START
-            x = dp(12)
-            y = dp(120)
+            x = dp(10)
+            y = dp(80)
         }
 
-        v.findViewById<View>(R.id.btnCopy).setOnClickListener {
+        v.findViewById<TextView>(R.id.btnCopy).setOnClickListener {
             val text = txt?.text?.toString().orEmpty()
             if (text.isBlank()) return@setOnClickListener
             val cm = ctx.getSystemService(ClipboardManager::class.java)
@@ -64,9 +77,16 @@ class FloatingTextWindow(
             toast("已复制 ${text.length} 字")
         }
 
-        v.findViewById<View>(R.id.btnClear).setOnClickListener {
+        v.findViewById<TextView>(R.id.btnClear).setOnClickListener {
             txt?.text = ""
-            counter?.text = "0 字"
+        }
+
+        v.findViewById<TextView>(R.id.btnUp).setOnClickListener { listener.onSwipeUp() }
+        v.findViewById<TextView>(R.id.btnDown).setOnClickListener { listener.onSwipeDown() }
+
+        autoBtn?.setOnClickListener {
+            autoOn = listener.onAutoToggle(!autoOn)
+            renderAuto()
         }
 
         val collapse = v.findViewById<TextView>(R.id.btnCollapse)
@@ -76,9 +96,9 @@ class FloatingTextWindow(
             collapse.text = if (visible) "＋" else "－"
         }
 
-        v.findViewById<View>(R.id.btnClose).setOnClickListener {
+        v.findViewById<TextView>(R.id.btnClose).setOnClickListener {
+            listener.onClose()
             hide()
-            onClose?.invoke()
         }
 
         v.findViewById<View>(R.id.header).setOnTouchListener { _, e ->
@@ -98,38 +118,44 @@ class FloatingTextWindow(
             }
         }
 
-        if (addView(v, lp)) {
-            root = v
-        } else {
+        if (!addView(v, lp)) {
             lp.type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
-            if (addView(v, lp)) {
-                root = v
-            } else {
+            if (!addView(v, lp)) {
                 toast("悬浮窗创建失败，请授予悬浮窗权限")
+                return
             }
         }
+        root = v
     }
 
     private fun addView(v: View, lp: WindowManager.LayoutParams): Boolean =
-        try {
-            wm.addView(v, lp)
-            true
-        } catch (e: Exception) {
-            false
-        }
+        try { wm.addView(v, lp); true } catch (e: Exception) { false }
 
     private fun resolveType(): Int =
-        if (Settings.canDrawOverlays(ctx)) {
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-        } else {
-            WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
-        }
+        if (Settings.canDrawOverlays(ctx)) WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+        else WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
 
-    fun update(text: String) {
-        val tv = txt ?: return
-        tv.text = text
-        counter?.text = "${text.length} 字"
-        scroll?.scrollTo(0, 0)
+    fun update(text: String, statusText: String) {
+        txt?.text = text
+        status?.text = statusText
+    }
+
+    fun setAuto(on: Boolean) {
+        autoOn = on
+        renderAuto()
+    }
+
+    private fun renderAuto() {
+        autoBtn?.text = if (autoOn) "自动:开" else "自动:关"
+        autoBtn?.setTextColor(if (autoOn) 0xFF7CFFB2.toInt() else 0xFF9AA4B2.toInt())
+    }
+
+    fun bounds(): Rect? {
+        val r = root ?: return null
+        if (r.width <= 0 || r.height <= 0) return null
+        val loc = IntArray(2)
+        r.getLocationOnScreen(loc)
+        return Rect(loc[0], loc[1], loc[0] + r.width, loc[1] + r.height)
     }
 
     fun hide() {
@@ -137,8 +163,7 @@ class FloatingTextWindow(
         root = null
     }
 
-    private fun toast(msg: String) =
-        Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
+    private fun toast(msg: String) = Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show()
 
     private fun dp(v: Int) = (v * ctx.resources.displayMetrics.density).toInt()
 }

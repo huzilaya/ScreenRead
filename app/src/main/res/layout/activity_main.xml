@@ -22,13 +22,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="通过无障碍服务读取屏幕上显示的文字，实时显示在悬浮面板中，可一键复制。全部离线处理。"
+            android:text="无障碍读控件文字 + 屏幕捕获识别画面文字（视频字幕），可按关键词自动上滑。"
             android:textSize="13sp" />
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="16dp"
             app:cardCornerRadius="14dp"
             app:cardElevation="0dp"
             app:strokeWidth="1dp"
@@ -96,7 +96,53 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="第 2 步 · 悬浮窗权限（可选）"
+                        android:text="第 2 步 · 画面文字识别"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/statusOcr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="未启动（需授权录屏）"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnOcr"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="启动" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#22808080">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="第 3 步 · 悬浮窗权限"
                         android:textStyle="bold" />
 
                     <TextView
@@ -120,32 +166,64 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="设置"
+            android:layout_marginTop="22dp"
+            android:text="关键词规则"
             android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="一行一条：关键词,动作（上滑 / 下滑 / 停止 / 复制）"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/etRules"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="top|start"
+            android:hint="广告,上滑&#10;抽奖,下滑&#10;关注,停止"
+            android:inputType="textMultiLine"
+            android:minLines="4"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btnSaveKw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="保存规则" />
+
+        <Switch
+            android:id="@+id/swRules"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:text="启用关键词规则（关闭 = 定时上滑）" />
 
         <Switch
             android:id="@+id/swPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:text="显示悬浮文字面板" />
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:text="显示悬浮面板" />
 
         <Switch
             android:id="@+id/swAutoCopy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:text="识别到文字后自动复制到剪贴板" />
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:text="识别到文字后自动复制" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="20dp"
             android:lineSpacingExtra="4dp"
-            android:text="使用方法&#10;1. 开启无障碍服务，悬浮面板会自动出现。&#10;2. 切到任意 App，面板实时刷新当前屏幕文字。&#10;3. 拖动标题栏可移动面板；点「复制」取走全部文字，点「＋/－」收起展开，点「✕」关闭。&#10;4. 面板关闭后，重新打开本 App 并打开上面的开关即可恢复。&#10;&#10;说明&#10;• 只读取有文字属性的控件，不改动任何数据，不联网。&#10;• 部分自绘界面（部分聊天列表、短视频、游戏）没有文字节点，读不到属于正常现象。"
+            android:text="使用步骤&#10;1. 开无障碍服务 → 2. 点「启动」并允许录屏 → 3. 给悬浮窗权限。&#10;4. 打开哔哩哔哩竖屏视频，面板出现【画面文字】。&#10;5. 点面板「自动」：开规则时只在命中关键词时滑动；关规则则按间隔上滑。&#10;&#10;说明&#10;• 画面文字靠 OCR（约 0.65 秒一帧），只认画面上可见的字，认不了语音。&#10;• 面板区域会被自动涂黑，不会把自己认进去。&#10;• 同一规则 2.5 秒内只触发一次。&#10;• 高频滑动可能触发平台风控，建议间隔 ≥3 秒、仅自用。"
             android:textSize="13sp" />
     </LinearLayout>
 </ScrollView>
