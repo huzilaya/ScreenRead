@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">屏幕取字</string>
+    <string name="a11y_label">屏幕取字服务</string>
+    <string name="a11y_desc">读取当前屏幕上的文字并显示在悬浮面板中。所有数据仅在本机处理，不会上传。</string>
+</resources>

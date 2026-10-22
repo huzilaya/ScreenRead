@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="屏幕取字"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="通过无障碍服务读取屏幕上显示的文字，实时显示在悬浮面板中，可一键复制。全部离线处理。"
+            android:textSize="13sp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#22808080">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="第 1 步 · 无障碍服务"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/statusA11y"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="未开启"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnA11y"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="去开启" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#22808080">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="第 2 步 · 悬浮窗权限（可选）"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/statusOverlay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="未授权"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnOverlay"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="去授权" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="设置"
+            android:textStyle="bold" />
+
+        <Switch
+            android:id="@+id/swPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="显示悬浮文字面板" />
+
+        <Switch
+            android:id="@+id/swAutoCopy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="识别到文字后自动复制到剪贴板" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:lineSpacingExtra="4dp"
+            android:text="使用方法&#10;1. 开启无障碍服务，悬浮面板会自动出现。&#10;2. 切到任意 App，面板实时刷新当前屏幕文字。&#10;3. 拖动标题栏可移动面板；点「复制」取走全部文字，点「＋/－」收起展开，点「✕」关闭。&#10;4. 面板关闭后，重新打开本 App 并打开上面的开关即可恢复。&#10;&#10;说明&#10;• 只读取有文字属性的控件，不改动任何数据，不联网。&#10;• 部分自绘界面（部分聊天列表、短视频、游戏）没有文字节点，读不到属于正常现象。"
+            android:textSize="13sp" />
+    </LinearLayout>
+</ScrollView>
